@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renders — 3D Art by [Your Name]</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --text: #f0ede8;
+    --muted: #888880;
+    --accent: #c8a951;
+    --accent-dim: #7a6330;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav ul a {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.2rem;
+    border: 0.5px solid var(--accent-dim);
+    color: var(--accent);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 3rem;
+    gap: 4rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .hero-left { padding: 4rem 0; }
+
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 0.5px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: var(--bg);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--text); }
+
+  .hero-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    height: 80vh;
+    max-height: 600px;
+  }
+
+  .hero-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .hero-card:hover { border-color: var(--accent-dim); }
+
+  .hero-card:first-child {
+    grid-row: 1 / 3;
+  }
+
+  .render-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 2rem;
+  }
+
+  .render-icon {
+    width: 48px;
+    height: 48px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-dim);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .render-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .render-sub {
+    font-size: 0.65rem;
+    color: var(--accent-dim);
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .hero-card:hover .card-overlay { opacity: 1; }
+
+  .card-overlay span {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .stat-item {
+    padding: 2rem 3rem;
+    border-right: 0.5px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 5rem 3rem; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .section-link {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+    padding-bottom: 2px;
+  }
+
+  .section-link:hover { color: var(--accent); }
+
+  /* ── PORTFOLIO GRID ── */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .portfolio-item {
+    background: var(--bg);
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .portfolio-item.featured {
+    grid-column: span 2;
+    aspect-ratio: 2/1;
+  }
+
+  .portfolio-render {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--surface);
+    transition: background 0.3s;
+  }
+
+  .portfolio-item:hover .portfolio-render {
+    background: #161616;
+  }
+
+  .render-shape {
+    opacity: 0.15;
+    font-family: var(--font-display);
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    color: var(--text);
+  }
+
+  .portfolio-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    background: var(--surface);
+    border-top: 0.5px solid var(--border);
+  }
+
+  .portfolio-item:hover .portfolio-info {
+    transform: translateY(0);
+  }
+
+  .portfolio-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .portfolio-meta {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Geometric render visuals */
+  .geo-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+  }
+
+  .geo-svg { opacity: 0.6; transition: opacity 0.3s; }
+  .portfolio-item:hover .geo-svg { opacity: 1; }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .skill-card {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .skill-card:hover { background: var(--surface); }
+
+  .skill-icon {
+    width: 36px;
+    height: 36px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--accent);
+    font-size: 1rem;
+  }
+
+  .skill-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .skill-level {
+    margin-top: 1.5rem;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .skill-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  .skill-pct {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent-dim);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ── PROCESS ── */
+  .process-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .process-step {
+    background: var(--bg);
+    padding: 2.5rem 2rem;
+    position: relative;
+  }
+
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .step-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    border-top: 0.5px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .contact-left {
+    padding: 5rem 3rem;
+    border-right: 0.5px solid var(--border);
+  }
+
+  .contact-right {
+    padding: 5rem 3rem;
+  }
+
+  .contact-tagline {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-tagline em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .contact-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.9;
+    max-width: 360px;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.75rem 0;
+    border-bottom: 0.5px solid var(--border);
+    transition: color 0.2s;
+  }
+
+  .contact-link:hover { color: var(--accent); }
+
+  .contact-link-icon {
+    width: 28px;
+    height: 28px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 300;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    border-color: var(--accent-dim);
+  }
+
+  textarea { min-height: 120px; }
+
+  .form-submit {
+    width: 100%;
+    background: transparent;
+    border: 0.5px solid var(--accent-dim);
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 400;
+  }
+
+  .form-submit:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--accent); }
+
+  .footer-copy {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-left > * {
+    opacity: 0;
+    animation: fadeUp 0.6s forwards;
+  }
+
+  .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-left > *:nth-child(2) { animation-delay: 0.25s; }
+  .hero-left > *:nth-child(3) { animation-delay: 0.4s; }
+  .hero-left > *:nth-child(4) { animation-delay: 0.55s; }
+
+  .hero-right {
+    opacity: 0;
+    animation: fadeUp 0.6s 0.3s forwards;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border: 0.5px solid var(--border);
+    border-bottom: none;
+    width: fit-content;
+  }
+
+  .filter-btn {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: none;
+    border-right: 0.5px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .filter-btn:last-child { border-right: none; }
+  .filter-btn.active { color: var(--accent); background: var(--surface); }
+  .filter-btn:hover:not(.active) { color: var(--text); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ── CURSOR DOT ── */
+  .cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 2rem 1.5rem; min-height: auto; gap: 2rem; }
+    .hero-right { height: 300px; }
+    .stats-bar { grid-template-columns: repeat(2,1fr); }
+    .stat-item { padding: 1.5rem; }
+    section { padding: 3rem 1.5rem; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .portfolio-item.featured { grid-column: span 1; aspect-ratio: 1; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .process-list { grid-template-columns: 1fr 1fr; }
+    .contact-section { grid-template-columns: 1fr; }
+    .contact-left { border-right: none; border-bottom: 0.5px solid var(--border); padding: 3rem 1.5rem; }
+    .contact-right { padding: 3rem 1.5rem; }
+    footer { padding: 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">RENDER<span>.</span></a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire me</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-tag">3D Artist &amp; Product Renderer</div>
+    <h1>BLENDER<br><em>RENDERS</em><br>THAT SELL</h1>
+    <p class="hero-desc">Photorealistic product renders, cinematic lighting, and stunning 3D visuals — built entirely in Blender.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn-primary">View work</a>
+      <a href="#contact" class="btn-secondary">Get a quote →</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <!-- Card 1: tall featured -->
+    <div class="hero-card">
+      <div class="render-placeholder">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <rect x="20" y="20" width="40" height="40" stroke="#c8a951" stroke-width="0.5"/>
+          <rect x="28" y="28" width="24" height="24" stroke="#7a6330" stroke-width="0.5"/>
+          <line x1="20" y1="20" x2="28" y2="28" stroke="#7a6330" stroke-width="0.5"/>
+          <line x1="60" y1="20" x2="52" y2="28" stroke="#7a6330" stroke-width="0.5"/>
+          <line x1="20" y1="60" x2="28" y2="52" stroke="#7a6330" stroke-width="0.5"/>
+          <line x1="60" y1="60" x2="52" y2="52" stroke="#7a6330" stroke-width="0.5"/>
+        </svg>
+        <div class="render-label">Perfume bottle</div>
+        <div class="render-sub">Glass BSDF · Cycles</div>
+      </div>
+      <div class="card-overlay"><span>Product render</span></div>
+    </div>
+    <!-- Card 2 -->
+    <div class="hero-card">
+      <div class="render-placeholder" style="gap:6px">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="20" stroke="#c8a951" stroke-width="0.5"/>
+          <circle cx="28" cy="28" r="12" stroke="#7a6330" stroke-width="0.5"/>
+          <circle cx="28" cy="28" r="4" fill="#c8a951" fill-opacity="0.4"/>
+        </svg>
+        <div class="render-label">Watch face</div>
+        <div class="render-sub">Metallic PBR</div>
+      </div>
+      <div class="card-overlay"><span>Jewellery render</span></div>
+    </div>
+    <!-- Card 3 -->
+    <div class="hero-card">
+      <div class="render-placeholder" style="gap:6px">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <polygon points="28,8 48,40 8,40" stroke="#c8a951" stroke-width="0.5" fill="none"/>
+          <polygon points="28,18 40,38 16,38" stroke="#7a6330" stroke-width="0.5" fill="none"/>
+        </svg>
+        <div class="render-label">Geometric art</div>
+        <div class="render-sub">HDRI lit</div>
+      </div>
+      <div class="card-overlay"><span>Abstract 3D</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">48<span>+</span></div>
+    <div class="stat-label">Renders completed</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">12<span>+</span></div>
+    <div class="stat-label">Client projects</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">3<span>K</span></div>
+    <div class="stat-label">Instagram followers</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">1<span>yr</span></div>
+    <div class="stat-label">With Blender</div>
+  </div>
+</div>
+
+<!-- WORK -->
+<section id="work">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Selected work</div>
+      <h2>RENDERS</h2>
+    </div>
+    <a href="#" class="section-link">All projects →</a>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterWork(this,'all')">All</button>
+    <button class="filter-btn" onclick="filterWork(this,'product')">Product</button>
+    <button class="filter-btn" onclick="filterWork(this,'abstract')">Abstract</button>
+    <button class="filter-btn" onclick="filterWork(this,'lighting')">Lighting</button>
+  </div>
+
+  <div class="portfolio-grid" id="portfolio-grid">
+
+    <div class="portfolio-item featured" data-cat="product">
+      <div class="geo-container">
+        <svg class="geo-svg" width="320" height="180" viewBox="0 0 320 180" fill="none">
+          <rect x="110" y="30" width="60" height="120" rx="4" stroke="#c8a951" stroke-width="0.8"/>
+          <rect x="118" y="38" width="44" height="104" rx="2" stroke="#7a6330" stroke-width="0.5"/>
+          <ellipse cx="140" cy="50" rx="16" ry="8" stroke="#c8a951" stroke-width="0.5" fill="#c8a95110"/>
+          <line x1="140" y1="58" x2="140" y2="130" stroke="#7a6330" stroke-width="0.5" stroke-dasharray="4 3"/>
+          <circle cx="140" cy="140" r="6" stroke="#c8a951" stroke-width="0.5"/>
+          <line x1="50" y1="90" x2="100" y2="90" stroke="#444" stroke-width="0.5"/>
+          <line x1="180" y1="90" x2="270" y2="90" stroke="#444" stroke-width="0.5"/>
+          <text x="30" y="94" font-size="9" fill="#7a6330" font-family="'DM Sans',sans-serif" letter-spacing="1">KEY</text>
+          <text x="272" y="94" font-size="9" fill="#7a6330" font-family="'DM Sans',sans-serif" letter-spacing="1">FILL</text>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Minimalist serum bottle</div>
+        <div class="portfolio-meta">Product · Cycles · Glass BSDF</div>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="abstract">
+      <div class="geo-container">
+        <svg class="geo-svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <circle cx="90" cy="90" r="60" stroke="#c8a951" stroke-width="0.6"/>
+          <circle cx="90" cy="90" r="40" stroke="#7a6330" stroke-width="0.5"/>
+          <circle cx="90" cy="90" r="20" fill="#c8a95120" stroke="#c8a951" stroke-width="0.5"/>
+          <line x1="30" y1="90" x2="150" y2="90" stroke="#222" stroke-width="0.5"/>
+          <line x1="90" y1="30" x2="90" y2="150" stroke="#222" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Gold sphere series</div>
+        <div class="portfolio-meta">Abstract · PBR metal</div>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="lighting">
+      <div class="geo-container">
+        <svg class="geo-svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <polygon points="90,30 150,150 30,150" stroke="#c8a951" stroke-width="0.6" fill="none"/>
+          <polygon points="90,55 128,130 52,130" stroke="#7a6330" stroke-width="0.5" fill="#c8a95108"/>
+          <line x1="90" y1="30" x2="90" y2="150" stroke="#333" stroke-width="0.5"/>
+          <circle cx="90" cy="105" r="3" fill="#c8a951"/>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Rim lighting study</div>
+        <div class="portfolio-meta">Lighting · Area lights</div>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="product">
+      <div class="geo-container">
+        <svg class="geo-svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <rect x="55" y="40" width="70" height="100" rx="3" stroke="#c8a951" stroke-width="0.6" fill="none"/>
+          <rect x="65" y="50" width="50" height="70" rx="2" stroke="#7a6330" stroke-width="0.5" fill="#c8a95108"/>
+          <rect x="75" y="130" width="30" height="10" rx="1" stroke="#7a6330" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Phone mockup</div>
+        <div class="portfolio-meta">Product · Plastic material</div>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="abstract">
+      <div class="geo-container">
+        <svg class="geo-svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <rect x="50" y="50" width="80" height="80" stroke="#c8a951" stroke-width="0.6" fill="none" transform="rotate(45 90 90)"/>
+          <rect x="65" y="65" width="50" height="50" stroke="#7a6330" stroke-width="0.5" fill="#c8a95110" transform="rotate(45 90 90)"/>
+          <circle cx="90" cy="90" r="8" fill="#c8a951" fill-opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Crystal facets</div>
+        <div class="portfolio-meta">Abstract · Glass IOR</div>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="lighting">
+      <div class="geo-container">
+        <svg class="geo-svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <ellipse cx="90" cy="110" rx="50" ry="12" stroke="#333" stroke-width="0.5"/>
+          <rect x="70" y="50" width="40" height="65" rx="20" stroke="#c8a951" stroke-width="0.6" fill="none"/>
+          <ellipse cx="90" cy="50" rx="20" ry="8" stroke="#c8a951" stroke-width="0.5" fill="#c8a95115"/>
+        </svg>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-title">Candle HDRI study</div>
+        <div class="portfolio-meta">Lighting · Volume scatter</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="background: var(--surface); border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border);">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Capabilities</div>
+      <h2>SKILLS</h2>
+    </div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">◈</div>
+      <div class="skill-name">Modeling</div>
+      <div class="skill-desc">Organic and hard-surface product modeling for packaging, jewellery, and props.</div>
+      <div class="skill-level"><div class="skill-fill" style="width:0%" data-width="80%"></div></div>
+      <div class="skill-pct">Advanced</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">◉</div>
+      <div class="skill-name">Lighting</div>
+      <div class="skill-desc">HDRI, studio 3-point, rim lighting, and moody product setups.</div>
+      <div class="skill-level"><div class="skill-fill" style="width:0%" data-width="90%"></div></div>
+      <div class="skill-pct">Expert</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">◆</div>
+      <div class="skill-name">Materials</div>
+      <div class="skill-desc">PBR textures, Principled BSDF, glass, metal, fabric, and custom node setups.</div>
+      <div class="skill-level"><div class="skill-fill" style="width:0%" data-width="85%"></div></div>
+      <div class="skill-pct">Advanced</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">◇</div>
+      <div class="skill-name">Rendering</div>
+      <div class="skill-desc">Cycles and Eevee — optimised for fast turnaround without sacrificing quality.</div>
+      <div class="skill-level"><div class="skill-fill" style="width:0%" data-width="78%"></div></div>
+      <div class="skill-pct">Proficient</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">How I work</div>
+      <h2>PROCESS</h2>
+    </div>
+  </div>
+  <div class="process-list">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Brief</div>
+      <div class="step-desc">You share references, product details, and the mood you're going for. Takes 10 minutes over email.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Concept</div>
+      <div class="step-desc">I send a rough lighting and composition sketch within 24 hours. One revision included.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Render</div>
+      <div class="step-desc">Full resolution Cycles render with final materials, lighting, and camera. PNG + PSD delivered.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Deliver</div>
+      <div class="step-desc">Files delivered via Google Drive. Revisions handled within 48 hours. Simple as that.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-section" id="contact">
+  <div class="contact-left">
+    <div class="section-tag">Get in touch</div>
+    <div class="contact-tagline">LET'S BUILD<br>SOMETHING<br><em>REAL</em></div>
+    <p class="contact-desc">Available for product renders, brand visuals, and Instagram content. Turnaround from 48 hours.</p>
+    <div class="contact-links">
+      <a href="mailto:hello@yourname.com" class="contact-link">
+        <div class="contact-link-icon">@</div>
+        hello@yourname.com
+      </a>
+      <a href="https://instagram.com/yourhandle" class="contact-link">
+        <div class="contact-link-icon">ig</div>
+        @yourhandle
+      </a>
+      <a href="https://gumroad.com" class="contact-link">
+        <div class="contact-link-icon">↗</div>
+        Gumroad shop
+      </a>
+    </div>
+  </div>
+
+  <div class="contact-right">
+    <form onsubmit="handleForm(event)">
+      <div class="form-group">
+        <label class="form-label" for="name">Your name</label>
+        <input type="text" id="name" placeholder="Alex Kumar" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input type="email" id="email" placeholder="alex@brand.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="msg">Project brief</label>
+        <textarea id="msg" placeholder="Tell me about your product and what you need..." required></textarea>
+      </div>
+      <button type="submit" class="form-submit" id="submit-btn">Send message →</button>
+    </form>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#home" class="footer-logo">RENDER<span>.</span></a>
+  <div class="footer-copy">© 2026 · Built with Blender + passion</div>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+
+function filterWork(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.portfolio-item').forEach(item => {
+    if (cat === 'all' || item.dataset.cat === cat) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.skill-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width;
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.skills-grid').forEach(g => observer.observe(g));
+
+function handleForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Message sent ✓';
+  btn.style.background = '#1D9E75';
+  btn.style.color = '#fff';
+  btn.style.borderColor = '#1D9E75';
+  setTimeout(() => {
+    btn.textContent = 'Send message →';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('msg').value = '';
+  }, 3000);
+}
+</script>
+</body>
+</html>
